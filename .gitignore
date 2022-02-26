@@ -19,3 +19,7 @@
 
 # Go workspace file
 go.work
+
+# Remove all files with credentials
+credentials
+config
