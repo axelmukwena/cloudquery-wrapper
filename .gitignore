@@ -23,3 +23,5 @@ go.work
 # Remove all files with credentials
 credentials
 config
+
+.DS_Store
