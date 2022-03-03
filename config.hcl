@@ -9,7 +9,8 @@ cloudquery {
 
   connection {
     // dsn = "postgres://postgres:pass@localhost:5432/cloudtry?sslmode=disable"
-    dsn = "tsdb://postgres:pass@localhost:5432/cloudtry?sslmode=disable"
+    // dsn = "tsdb://postgres:pass@localhost:5432/cloudtry?sslmode=disable"
+    dsn = "${DSN}"
   }
 
   history {

@@ -1,10 +1,11 @@
 require 'ffi'
+require 'json'
 
 # Module that represents shared lib
 module Cloudquery
   extend FFI::Library
 
-  ffi_lib './cloudquery.so'
+  ffi_lib File.dirname(__FILE__) + '/cloudquery.so'
 
   # define class String to map:
   # C type struct { const char *p; GoInt n; }
@@ -21,12 +22,24 @@ module Cloudquery
 
   # foreign function definitions
   attach_function :QueryAWS,
-                  [String.by_value, String.by_value],
+                  [String.by_value],
                   :int
+
+  def aws(aws_json)
+    json_string = JSON.generate(aws_json)
+    c_string = Cloudquery::String.new(json_string)
+    Cloudquery.QueryAWS(c_string)
+  end
+
+  module_function :aws
+
 end
 
-# Call QueryAWS (credentials, config)
-puts "Launching Go:",  Cloudquery.QueryAWS(
-  Cloudquery::String.new("[default]\naws_access_key_id = RubyCredentials\naws_secret_access_key = RubyCredentials\n"),
-  Cloudquery::String.new("[default]\nregion = us-west-2\noutput=json\n")
-)
+aws_credentials = {
+  aws_access_key_id: "AWS_ACCESS_KEY_ID",
+  aws_secret_access_key: "AWS_SECRET_ACCESS_KEY",
+  aws_session_token: "AWS_SESSION_TOKEN",
+  region: "AWS_REGION",
+}
+
+Cloudquery.aws(aws_credentials)

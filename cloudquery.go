@@ -3,6 +3,7 @@ package main
 import "C"
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -10,6 +11,17 @@ import (
 	"os"
 	"os/exec"
 )
+
+// String to indicate provider folder
+var awsSubFolder string = "/.aws" // "/.aaaa" a temp placeholder for "/.aws"
+
+// AWS JSON struct
+type AwsStruct struct {
+	Aws_access_key_id     string
+	Aws_secret_access_key string
+	Aws_session_token     string
+	Region                string
+}
 
 // Check if directory exists, if not, create it
 func ensureDir(dirName string) error {
@@ -31,19 +43,44 @@ func ensureDir(dirName string) error {
 	return err
 }
 
-// Create the credentials file at provided location: "Users/username/.aws/credential"
-func SetCredentials(credentials string) {
-	// String to indicate provider folder
-	var subfolder string = "/.aaaa" // "/.aaaa" a temp placeholder for "/.aws"
+func ParseAWS(awsString string) (string, string) {
+	var awsStruct AwsStruct
+	json.Unmarshal([]byte(awsString), &awsStruct)
 
-	homepath, error := os.UserHomeDir()
-	if error != nil {
-		fmt.Println(homepath, error)
+	// Extract credentials
+	credentials := ""
+	if awsStruct.Aws_session_token != "" {
+		credentials = "[temp]\n" +
+			"aws_access_key_id = " + awsStruct.Aws_access_key_id + "\n" +
+			"aws_secret_access_key = " + awsStruct.Aws_secret_access_key + "\n" +
+			"aws_session_token = " + awsStruct.Aws_session_token + "\n"
+	} else {
+		credentials = "[default]\n" +
+			"aws_access_key_id = " + awsStruct.Aws_access_key_id + "\n" +
+			"aws_secret_access_key = " + awsStruct.Aws_secret_access_key + "\n"
 	}
 
-	val := ensureDir(homepath + subfolder)
+	// Extract config
+	config := ""
+	if awsStruct.Region != "" {
+		config = "[default]\nregion = " + awsStruct.Region + "\n"
+	} else {
+		config = "[default]\nregion = us-west-2\n"
+	}
 
-	filename := homepath + subfolder + "/credentials"
+	return credentials, config
+}
+
+// Create the credentials file at provided location: "Users/username/.aws/credential"
+func SetCredentials(credentials string) {
+	homePath, error := os.UserHomeDir()
+	if error != nil {
+		fmt.Println(homePath, error)
+	}
+
+	val := ensureDir(homePath + awsSubFolder)
+
+	filename := homePath + awsSubFolder + "/credentials"
 
 	if val != nil {
 		fmt.Println(val)
@@ -61,17 +98,14 @@ func SetCredentials(credentials string) {
 
 // Create the config file at provided location: "Users/username/.aws/config"
 func SetConfig(config string) {
-	// String to indicate provider folder
-	var subfolder string = "/.aaaa" // "/.aaaa" a temp placeholder for "/.aws"
-
-	homepath, error := os.UserHomeDir()
+	homePath, error := os.UserHomeDir()
 	if error != nil {
-		fmt.Println(homepath, error)
+		fmt.Println(homePath, error)
 	}
 
-	val := ensureDir(homepath + subfolder)
+	val := ensureDir(homePath + awsSubFolder)
 
-	filename := homepath + subfolder + "/config"
+	filename := homePath + awsSubFolder + "/config"
 
 	if val != nil {
 		fmt.Println(val)
@@ -87,26 +121,28 @@ func SetConfig(config string) {
 	}
 }
 
-func cloudquery() {
-	cmd := exec.Command("cloudquery", "fetch")
+func Cloudquery() {
+	cmd := exec.Command("cloudquery", "fetch", "--enable-console-log")
 
 	// err := cmd.Run()
 	stdoutStderr, err := cmd.CombinedOutput()
 
+	fmt.Printf("%s\n", stdoutStderr)
+
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Printf("%s\n", stdoutStderr)
 }
 
+// Main AWS function exported to Ruby
 //export QueryAWS
-func QueryAWS(credentials, config string) int {
-	// Main AWS funtion exported to Ruby
+func QueryAWS(awsString string) int {
+
+	credentials, config := ParseAWS(awsString)
 
 	SetCredentials(credentials)
 	SetConfig(config)
-	cloudquery()
+	Cloudquery()
 
 	return 1 // 0 if fail. Easier to send int than boolean
 }
