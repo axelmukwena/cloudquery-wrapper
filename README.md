@@ -44,3 +44,21 @@ block in ffi_lib': Could not open library './cloudquery.so': dlopen(./cloudquery
 - https://aws.github.io/aws-sdk-go-v2/docs/configuring-sdk/#specifying-credentials
 
 ---
+
+### Call Go function from another file
+- https://www.golangprograms.com/golang-import-function-from-another-folder.html
+- https://progressivecoder.com/how-to-call-golang-function-from-another-directory-or-module/
+
+---
+
+### Find running postgres instances
+```
+ps auxwww | grep postgres
+```
+
+---
+
+### Save to specific schema
+- https://github.com/jackc/pgx/issues/1013
+
+---

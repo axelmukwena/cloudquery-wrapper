@@ -1,150 +1,26 @@
 package main
 
 import "C"
-
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
-	"os/exec"
+	"cloudquery/providers"
 )
 
-// String to indicate provider folder
-var awsSubFolder string = "/.aws" // "/.aaaa" a temp placeholder for "/.aws"
+// Main provider functions exported to Ruby
 
-// AWS JSON struct
-type AwsStruct struct {
-	Aws_access_key_id     string
-	Aws_secret_access_key string
-	Aws_session_token     string
-	Region                string
-}
-
-// Check if directory exists, if not, create it
-func ensureDir(dirName string) error {
-	err := os.Mkdir(dirName, 0755)
-	if err == nil {
-		return nil
-	}
-	if os.IsExist(err) {
-		// check that the existing path is a directory
-		info, err := os.Stat(dirName)
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() {
-			return errors.New("path exists but is not a directory\n")
-		}
-		return nil
-	}
-	return err
-}
-
-func ParseAWS(awsString string) (string, string) {
-	var awsStruct AwsStruct
-	json.Unmarshal([]byte(awsString), &awsStruct)
-
-	// Extract credentials
-	credentials := ""
-	if awsStruct.Aws_session_token != "" {
-		credentials = "[temp]\n" +
-			"aws_access_key_id = " + awsStruct.Aws_access_key_id + "\n" +
-			"aws_secret_access_key = " + awsStruct.Aws_secret_access_key + "\n" +
-			"aws_session_token = " + awsStruct.Aws_session_token + "\n"
-	} else {
-		credentials = "[default]\n" +
-			"aws_access_key_id = " + awsStruct.Aws_access_key_id + "\n" +
-			"aws_secret_access_key = " + awsStruct.Aws_secret_access_key + "\n"
-	}
-
-	// Extract config
-	config := ""
-	if awsStruct.Region != "" {
-		config = "[default]\nregion = " + awsStruct.Region + "\n"
-	} else {
-		config = "[default]\nregion = us-west-2\n"
-	}
-
-	return credentials, config
-}
-
-// Create the credentials file at provided location: "Users/username/.aws/credential"
-func SetCredentials(credentials string) {
-	homePath, error := os.UserHomeDir()
-	if error != nil {
-		fmt.Println(homePath, error)
-	}
-
-	val := ensureDir(homePath + awsSubFolder)
-
-	filename := homePath + awsSubFolder + "/credentials"
-
-	if val != nil {
-		fmt.Println(val)
-	}
-
-	err := ioutil.WriteFile(filename, []byte(
-		credentials,
-	), 0777)
-	if err != nil {
-		fmt.Printf("Unable to write file: %v\n", err)
-	} else {
-		fmt.Printf("Credential file created at root\n")
-	}
-}
-
-// Create the config file at provided location: "Users/username/.aws/config"
-func SetConfig(config string) {
-	homePath, error := os.UserHomeDir()
-	if error != nil {
-		fmt.Println(homePath, error)
-	}
-
-	val := ensureDir(homePath + awsSubFolder)
-
-	filename := homePath + awsSubFolder + "/config"
-
-	if val != nil {
-		fmt.Println(val)
-	}
-
-	err := ioutil.WriteFile(filename, []byte(
-		config,
-	), 0777)
-	if err != nil {
-		fmt.Printf("Unable to write file: %v\n", err)
-	} else {
-		fmt.Printf("Config file created at root\n")
-	}
-}
-
-func Cloudquery() {
-	cmd := exec.Command("cloudquery", "fetch", "--enable-console-log")
-
-	// err := cmd.Run()
-	stdoutStderr, err := cmd.CombinedOutput()
-
-	fmt.Printf("%s\n", stdoutStderr)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-// Main AWS function exported to Ruby
 //export QueryAWS
 func QueryAWS(awsString string) int {
-
-	credentials, config := ParseAWS(awsString)
-
-	SetCredentials(credentials)
-	SetConfig(config)
-	Cloudquery()
-
-	return 1 // 0 if fail. Easier to send int than boolean
+	ifSuccess := providers.AWS(awsString)
+	return ifSuccess
 }
 
-func main() {}
+//export QueryGCP
+func QueryGCP(gcpString string) int {
+	ifSuccess := providers.GCP(gcpString)
+	return ifSuccess
+}
+
+func main() {
+	//myString := `{ "type": "service_account", "project_id": "wagestack", "private_key_id": "82f6d09efb316fd6163630b1aa1719e68f44caa2", "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC6mV+IwUX6GOCY\nUE5YjHT0Jxgqt/oO2gJ6SFbtOioUNwsXxk+BsMAV5j+D0ff57l1I9GvM+o8/jf++\n4YKuTLiu4tzYKMdOh0LGxtQA0Alu+CqcsY1pNGVqNk9f/aaZtgO3WxRkdnQUzLHT\nNB9ofOTjYIIQhoYMqzmMU3geEfpTj2mEV7NevdPG9RzV4Zqi2VIGN71u6yZozNGU\n16Fp6anbQSOrI8lo0aom5rSZLLUD/m+nb7cdMVl6/B1+GB0WO7I96kooduPZLNZm\nJ3RT892O13O2h3jMxXdpgUCVMkpeMJ8YNv0U+rHDgCzivuqjQllQBhg6rw9yrgWG\nagknl4TrAgMBAAECggEABKzXEewVvsBk0Cwi6mEKhRt9pYRahYi8yyeI1gTBDSSb\n6IqVb2BoT6QnLzxRhDeOqsdE9CvK7wK1x6iKx6cwcWFJuzi6VaNZ7vUIVsTfl6Is\nHyTrsBkZ+WFG99a5F9zRlwR3LFUzb1n5kpsZtlp6uZ+vYo6cSTD5DiUBO2+j3/gK\n1iOgaL/oQCsrltTOMaYBzCknwZ1NDkprSSNIU0gCaQcWq5d/X7tzygxdVuGJ2L8p\n6dXJVC1UpiHKcDWNkuWvRHrrO1nztU1CKwUMz3vcrIgKkL3yFels4O+thgWzBUX7\naIbWdIUBw4NJ4VMTV9RE2B4igriD55KvuMXHQRHrUQKBgQD5rQ/VoGjGRruoVESi\ntcXQDoyJQAg4OSghUNh4pRGqtUDOdiuee9GkqQrMLhJIywEmPB/viUjcXpa34M0j\nEhG5TEsRhmekETYeozouOzkNQh/8wSHq5dvk33GATHHECEq8ZETuvXy9z/3aDq9u\nFLSppNIkJbB4B1pP8we6eW2L1wKBgQC/U0+TeQ9csKVhfEAzGaJnv7SSOzG3DvwQ\nD9XFhh3kK7Etz+pMGSYjMSDqGFXdrcMvsdQelG3REqlInZslmaON9zSgHQq38jhI\nFp15xk5HCjBHIPiaFcLIvRzGkTbaD+Un2LOKO4M1qcG3cu/joGMspXAJJut5KNF7\nCfOb4M6NDQKBgHPYYKh2LScSWq/XqaD1RjsrBPoJw8aSfpQ2troDnRbf0pn5KnP2\nb2c/J8tk9Qbhaj8bVpYF1NCq8rOOkp/bGm4ngA05l40Aj2PXyH7665XDQKQ92Ebt\nMAIZysgEsCSM1GBlBbbgJKjNgLNUbQFeihTMbNRoyGBoyPafhM542OMxAoGARaBh\n8z85MfgvF10KWA5aJfuEETttijrvzECXAT0fn6uu3QcvMuZsFJ6KZebZSMU1pSPI\nGCDYHh/2bzC8B2D0PnPaOPKYtfx2MvXX9TsPvZadnyUGk7ybmEYKNNEf7xedw3R/\nUiz6QQs4LjSrzGDP9q12Kj55rywFoAstFmsnf/kCgYADQYdNX5jGlC70NJa0+Tn1\ndT/wghJkBvZczI4/XWG6irrcXAqef+VWkPLm7cAYsiqqRSOe5ObOrsZ9jd2JZO4U\nKgpUZgmmIyRAQvjsAYEtlkinRH2rnfimpyoJ0GPz36QkGMO8Tg0gMFU10P7WLKdw\nye7hanK8EB8sbjmd1cnanw==\n-----END PRIVATE KEY-----\n", "client_email": "wagestack@wagestack.iam.gserviceaccount.com", "client_id": "102364514713233449200", "auth_uri": "https://accounts.google.com/o/oauth2/auth", "token_uri": "https://oauth2.googleapis.com/token", "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs", "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/wagestack%40wagestack.iam.gserviceaccount.com" }`
+	//ifSuccess := providers.GCP(myString)
+	//fmt.Printf("Returned: %v", ifSuccess)
+}
