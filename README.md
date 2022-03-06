@@ -62,3 +62,13 @@ ps auxwww | grep postgres
 - https://github.com/jackc/pgx/issues/1013
 
 ---
+
+### How to append enviromnent variables to .profile
+
+- https://superuser.com/a/1391353
+
+---
+
+### Check if file exists | Shell / Bash
+
+- https://linuxize.com/post/bash-check-if-file-exists/

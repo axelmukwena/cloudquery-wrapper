@@ -35,9 +35,20 @@ func setGcpCredentials(credentials string) {
 	}
 }
 
-func GCP(gcpString string) int {
-	setGcpCredentials(gcpString)
-	// Fetch("gcp")
+// Handle GCP environment variables
+func gcpEnvVariables() {
+	homePath, error := os.UserHomeDir()
+	if error != nil {
+		fmt.Println(homePath, error)
+	}
+	envVariables := "export GOOGLE_APPLICATION_CREDENTIALS=" + homePath + "/.gcp/credentials.json"
+	CreateEnvFile(envVariables)
+}
 
-	return 1000
+func GCP(gcpString string) int {
+	gcpEnvVariables()
+	setGcpCredentials(gcpString)
+	Fetch("gcp")
+
+	return 1
 }

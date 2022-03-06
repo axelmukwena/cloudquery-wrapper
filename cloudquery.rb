@@ -43,14 +43,18 @@ module Cloudquery
     Cloudquery.QueryGCP(c_string)
   end
 
+  # ----------------- Azure -----------------
+  attach_function :QueryAzure,
+                  [String.by_value],
+                  :int
+
+  def azure(azure_json)
+    json_string = JSON.generate(azure_json)
+    c_string = Cloudquery::String.new(json_string)
+    Cloudquery.QueryAzure(c_string)
+  end
+
   # module functions
-  module_function :aws, :gcp
+  module_function :aws, :gcp, :azure
 
 end
-
-aws_credentials = {
-  aws_access_key_id: "AWS_ACCESS_KEY_ID",
-  aws_secret_access_key: "AWS_SECRET_ACCESS_KEY",
-  aws_session_token: "AWS_SESSION_TOKEN",
-  region: "AWS_REGION",
-}

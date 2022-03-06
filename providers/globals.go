@@ -3,6 +3,7 @@ package providers
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -28,6 +29,26 @@ func ValidateDir(dirName string) error {
 	return err
 }
 
+// Create environment variable files
+func CreateEnvFile(content string) {
+	homePath, error := os.UserHomeDir()
+	if error != nil {
+		fmt.Println(homePath, error)
+	}
+
+	filename := homePath + "/.cloudquery-rails"
+
+	err := ioutil.WriteFile(filename, []byte(
+		content,
+	), 0777)
+	if err != nil {
+		fmt.Printf("Unable to create the environment variables file: %v\n", err)
+	} else {
+		fmt.Printf("Environment variables file created at root\n")
+	}
+}
+
+// Fetch given provider
 func Fetch(provider string) {
 	cmd := exec.Command("cloudquery", "fetch", provider, "--enable-console-log")
 
