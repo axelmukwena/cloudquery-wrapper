@@ -9,6 +9,9 @@ cloudquery {
   provider "aws" {
     version = "latest"
   }
+  provider "azure" {
+    version = "latest"
+  }
 
   connection {
     // dsn = "postgres://postgres:pass@localhost:5432/cloudtry?sslmode=disable"
@@ -67,6 +70,18 @@ provider "gcp" {
   // list of resources to fetch
   resources = ["*"]
 }
+
+provider "azure" {
+  configuration {
+    //  Optional. if you not specified, cloudquery tries to access all subscriptions available to tenant
+    //  subscriptions = ["<YOU_SUBSCRIPTION_ID_HERE>"]
+  }
+  // list of resources to fetch
+  resources = ["*"]
+  // enables partial fetching, allowing for any failures to not stop full resource pull
+  enable_partial_fetch = true
+}
+
 
 // Module Configurations
 modules {
