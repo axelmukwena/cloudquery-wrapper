@@ -18,6 +18,13 @@ cloudquery {
   provider "k8s" {
     version = "latest"
   }
+  provider "okta" {
+    version = "latest"
+  }
+  provider "terraform" {
+    version = "latest"
+  }
+
 
   connection {
     // dsn = "postgres://postgres:pass@localhost:5432/cloudtry?sslmode=disable"
@@ -122,6 +129,45 @@ provider "k8s" {
   enable_partial_fetch = true
 }
 
+provider "okta" {
+  configuration {
+    // Optional. Okta Token to access API, you can set this with OKTA_API_TOKEN env variable
+    // token = <YOUR_OKTA_TOKEN>
+    // Required. You okta domain name. Accessible at `export CQ_VAR_OKTA_DOMAIN="domain"`
+    domain = "${OKTA_DOMAIN}"
+  }
+
+  // list of resources to fetch
+  resources = ["*"]
+  // enables partial fetching, allowing for any failures to not stop full resource pull
+  enable_partial_fetch = true
+}
+
+provider "terraform" {
+  configuration {
+
+    // local backend
+    config "mylocal" {
+      backend = "local"
+      path    = "./examples/terraform.tfstate"
+    }
+    // s3 backend
+    config "myremote" {
+      backend  = "s3"
+      bucket   = "tf-states"
+      key      = "terraform.tfstate"
+      region   = "us-east-1"
+      role_arn = ""
+    }
+  }
+
+  // list of resources to fetch
+  resources = [
+    "tf.data"
+  ]
+  // enables partial fetching, allowing for any failures to not stop full resource pull
+  enable_partial_fetch = true
+}
 
 
 

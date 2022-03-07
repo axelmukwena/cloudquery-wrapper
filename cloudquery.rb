@@ -75,7 +75,20 @@ module Cloudquery
     Cloudquery.QueryKubernetes(c_string)
   end
 
+  # ----------------- Okta -----------------
+  attach_function :QueryOkta,
+                  [String.by_value],
+                  :int
+
+  def okta(okta_json)
+    json_string = JSON.generate(okta_json)
+    c_string = Cloudquery::String.new(json_string)
+    Cloudquery.QueryOkta(c_string)
+  end
+
+  # ---------------------------------------------------
+  
   # module functions
-  module_function :aws, :gcp, :azure, :digitalocean, :kubernetes
+  module_function :aws, :gcp, :azure, :digitalocean, :kubernetes, :okta
 
 end

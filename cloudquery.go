@@ -37,6 +37,12 @@ func QueryKubernetes(kubernetesString string) int {
 	return ifSuccess
 }
 
+//export QueryOkta
+func QueryOkta(oktaString string) int {
+	ifSuccess := providers.Okta(oktaString)
+	return ifSuccess
+}
+
 func main() {
 	// ifSuccess := providers.GCP("myString")
 	// fmt.Printf("Returned: %v", ifSuccess)
