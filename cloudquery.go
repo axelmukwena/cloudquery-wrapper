@@ -25,6 +25,12 @@ func QueryAzure(azureString string) int {
 	return ifSuccess
 }
 
+//export QueryDigitalocean
+func QueryDigitalocean(digitaloceanString string) int {
+	ifSuccess := providers.Digitalocean(digitaloceanString)
+	return ifSuccess
+}
+
 func main() {
 	// ifSuccess := providers.GCP("myString")
 	// fmt.Printf("Returned: %v", ifSuccess)

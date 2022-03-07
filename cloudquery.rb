@@ -54,7 +54,18 @@ module Cloudquery
     Cloudquery.QueryAzure(c_string)
   end
 
+  # ----------------- Digitalocean -----------------
+  attach_function :QueryDigitalocean,
+                  [String.by_value],
+                  :int
+
+  def digitalocean(digitalocean_json)
+    json_string = JSON.generate(digitalocean_json)
+    c_string = Cloudquery::String.new(json_string)
+    Cloudquery.QueryDigitalocean(c_string)
+  end
+
   # module functions
-  module_function :aws, :gcp, :azure
+  module_function :aws, :gcp, :azure, :digitalocean
 
 end
