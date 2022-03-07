@@ -46,8 +46,8 @@ func gcpEnvVariables() {
 }
 
 func GCP(gcpString string) int {
-	gcpEnvVariables()
 	setGcpCredentials(gcpString)
+	gcpEnvVariables()
 	Fetch("gcp")
 
 	return 1

@@ -31,6 +31,12 @@ func QueryDigitalocean(digitaloceanString string) int {
 	return ifSuccess
 }
 
+//export QueryKubernetes
+func QueryKubernetes(kubernetesString string) int {
+	ifSuccess := providers.Kubernetes(kubernetesString)
+	return ifSuccess
+}
+
 func main() {
 	// ifSuccess := providers.GCP("myString")
 	// fmt.Printf("Returned: %v", ifSuccess)

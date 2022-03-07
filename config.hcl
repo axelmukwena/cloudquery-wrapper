@@ -15,11 +15,14 @@ cloudquery {
   provider "digitalocean" {
     version = "latest"
   }
+  provider "k8s" {
+    version = "latest"
+  }
 
   connection {
     // dsn = "postgres://postgres:pass@localhost:5432/cloudtry?sslmode=disable"
     dsn = "tsdb://postgres:pass@localhost:5432/cloudtry?sslmode=disable"
-    // dsn = "${DSN}"
+    // dsn = "tsdb://postgres:pass@localhost:5432/krishancy_development?sslmode=disable"
   }
 
   history {
@@ -107,6 +110,18 @@ provider "digitalocean" {
   // enables partial fetching, allowing for any failures to not stop full resource pull
   enable_partial_fetch = true
 }
+
+provider "k8s" {
+  configuration {
+    // Optional. Set contexts that you want to fetch. If it is not given then all contexts from config are iterated over.
+    // contexts = ["YOUR_CONTEXT_NAME1", "YOUR_CONTEXT_NAME2"]
+  }
+  // list of resources to fetch
+  resources = ["*"]
+  // enables partial fetching, allowing for any failures to not stop full resource pull
+  enable_partial_fetch = true
+}
+
 
 
 

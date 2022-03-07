@@ -65,7 +65,17 @@ module Cloudquery
     Cloudquery.QueryDigitalocean(c_string)
   end
 
+  # ----------------- Kubernetes -----------------
+  attach_function :QueryKubernetes,
+                  [String.by_value],
+                  :int
+
+  def kubernetes(json_string)
+    c_string = Cloudquery::String.new(json_string)
+    Cloudquery.QueryKubernetes(c_string)
+  end
+
   # module functions
-  module_function :aws, :gcp, :azure, :digitalocean
+  module_function :aws, :gcp, :azure, :digitalocean, :kubernetes
 
 end
