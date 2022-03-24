@@ -26,9 +26,10 @@ func parseAzure(azureString string) string {
 }
 
 func Azure(azureString string) int {
+	success := 0
 	envVariables := parseAzure(azureString)
 	CreateEnvFile(envVariables)
-	Fetch("azure")
+	success = Fetch("azure")
 
-	return 1
+	return success
 }

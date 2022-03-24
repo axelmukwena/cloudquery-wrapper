@@ -70,6 +70,10 @@ extern "C" {
 
 extern GoInt QueryAWS(GoString awsString);
 extern GoInt QueryGCP(GoString gcpString);
+extern GoInt QueryAzure(GoString azureString);
+extern GoInt QueryDigitalocean(GoString digitaloceanString);
+extern GoInt QueryKubernetes(GoString kubernetesString);
+extern GoInt QueryOkta(GoString oktaString);
 
 #ifdef __cplusplus
 }

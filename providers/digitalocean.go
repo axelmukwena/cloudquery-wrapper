@@ -26,9 +26,10 @@ func parseDigitalocean(digitaloceanString string) string {
 }
 
 func Digitalocean(digitaloceanString string) int {
+	success := 0
 	envVariables := parseDigitalocean(digitaloceanString)
 	CreateEnvFile(envVariables)
-	Fetch("digitalocean")
+	success = Fetch("digitalocean")
 
-	return 1
+	return success
 }

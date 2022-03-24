@@ -8,9 +8,9 @@ import (
 )
 
 // String to indicate provider folder
-var kubernetesSubFolder string = "/.kubernetes"
+var kubernetesSubFolder string = "/.k8s"
 
-// Create the credential file at provided location: "Users/username/.kubernetes/credential.json"
+// Create the credential file at provided location: "Users/username/.k8s/credential.json"
 func setKubernetesCredentials(credentials string) {
 	homePath, error := os.UserHomeDir()
 	if error != nil {
@@ -41,14 +41,15 @@ func kubernetesEnvVariables() {
 	if error != nil {
 		fmt.Println(homePath, error)
 	}
-	envVariables := "export KUBECONFIG=" + homePath + "/.kubernetes/credentials"
+	envVariables := "export KUBECONFIG=" + homePath + "/.k8s/credentials"
 	CreateEnvFile(envVariables)
 }
 
 func Kubernetes(kubernetesString string) int {
+	success := 0
 	setKubernetesCredentials(kubernetesString)
 	kubernetesEnvVariables()
-	Fetch("kubernetes")
+	success = Fetch("k8s")
 
-	return 1
+	return success
 }

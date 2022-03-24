@@ -49,14 +49,23 @@ func CreateEnvFile(content string) {
 }
 
 // Fetch given provider
-func Fetch(provider string) {
-	cmd := exec.Command("cloudquery", "fetch", provider, "--enable-console-log")
+func Fetch(provider string) int {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+	}
+
+	config := "--config=" + currentDir + "/config/" + provider + ".hcl"
+
+	cmd := exec.Command("cloudquery", "fetch", provider, config, "--enable-console-log")
 
 	stdoutStderr, err := cmd.CombinedOutput()
 
 	fmt.Printf("%s\n", stdoutStderr)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return 0
 	}
+	return 1
 }

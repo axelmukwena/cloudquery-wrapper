@@ -22,9 +22,10 @@ func parseOkta(oktaString string) string {
 }
 
 func Okta(oktaString string) int {
+	success := 0
 	envVariables := parseOkta(oktaString)
 	CreateEnvFile(envVariables)
-	Fetch("okta")
+	success = Fetch("okta")
 
-	return 1
+	return success
 }

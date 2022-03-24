@@ -98,11 +98,12 @@ func setAwsConfig(config string) {
 }
 
 func AWS(awsString string) int {
+	success := 0
 	credentials, config := parseAWS(awsString)
 
 	setAwsCredentials(credentials)
 	setAwsConfig(config)
-	Fetch("aws")
+	success = Fetch("aws")
 
-	return 1 // 0 if fail. Easier to send int than boolean
+	return success
 }

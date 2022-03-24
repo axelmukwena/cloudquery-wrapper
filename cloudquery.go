@@ -9,38 +9,38 @@ import (
 
 //export QueryAWS
 func QueryAWS(awsString string) int {
-	ifSuccess := providers.AWS(awsString)
-	return ifSuccess
+	success := providers.AWS(awsString)
+	return success
 }
 
 //export QueryGCP
 func QueryGCP(gcpString string) int {
-	ifSuccess := providers.GCP(gcpString)
-	return ifSuccess
+	success := providers.GCP(gcpString)
+	return success
 }
 
 //export QueryAzure
 func QueryAzure(azureString string) int {
-	ifSuccess := providers.Azure(azureString)
-	return ifSuccess
+	success := providers.Azure(azureString)
+	return success
 }
 
 //export QueryDigitalocean
 func QueryDigitalocean(digitaloceanString string) int {
-	ifSuccess := providers.Digitalocean(digitaloceanString)
-	return ifSuccess
+	success := providers.Digitalocean(digitaloceanString)
+	return success
 }
 
 //export QueryKubernetes
 func QueryKubernetes(kubernetesString string) int {
-	ifSuccess := providers.Kubernetes(kubernetesString)
-	return ifSuccess
+	success := providers.Kubernetes(kubernetesString)
+	return success
 }
 
 //export QueryOkta
 func QueryOkta(oktaString string) int {
-	ifSuccess := providers.Okta(oktaString)
-	return ifSuccess
+	success := providers.Okta(oktaString)
+	return success
 }
 
 func main() {
