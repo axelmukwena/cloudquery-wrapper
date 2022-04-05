@@ -19,6 +19,10 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 /* Start of preamble from import "C" comments.  */
 
 
+#line 3 "cloudquery.go"
+ #include <stdlib.h>
+
+#line 1 "cgo-generated-wrapper"
 
 
 /* End of preamble from import "C" comments.  */
@@ -68,12 +72,42 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-extern GoInt QueryAWS(GoString awsString);
-extern GoInt QueryGCP(GoString gcpString);
-extern GoInt QueryAzure(GoString azureString);
-extern GoInt QueryDigitalocean(GoString digitaloceanString);
-extern GoInt QueryKubernetes(GoString kubernetesString);
-extern GoInt QueryOkta(GoString oktaString);
+extern char* QueryAWS(GoString awsString, GoString database);
+
+/* Return type for QueryGCP */
+struct QueryGCP_return {
+	GoInt r0;
+	GoString r1;
+};
+extern struct QueryGCP_return QueryGCP(GoString gcpString, GoString database);
+
+/* Return type for QueryAzure */
+struct QueryAzure_return {
+	GoInt r0;
+	GoString r1;
+};
+extern struct QueryAzure_return QueryAzure(GoString azureString, GoString database);
+
+/* Return type for QueryDigitalocean */
+struct QueryDigitalocean_return {
+	GoInt r0;
+	GoString r1;
+};
+extern struct QueryDigitalocean_return QueryDigitalocean(GoString digitaloceanString, GoString database);
+
+/* Return type for QueryKubernetes */
+struct QueryKubernetes_return {
+	GoInt r0;
+	GoString r1;
+};
+extern struct QueryKubernetes_return QueryKubernetes(GoString kubernetesString, GoString database);
+
+/* Return type for QueryOkta */
+struct QueryOkta_return {
+	GoInt r0;
+	GoString r1;
+};
+extern struct QueryOkta_return QueryOkta(GoString oktaString, GoString database);
 
 #ifdef __cplusplus
 }

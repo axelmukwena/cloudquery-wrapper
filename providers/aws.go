@@ -97,13 +97,30 @@ func setAwsConfig(config string) {
 	}
 }
 
-func AWS(awsString string) int {
+// Parse and extract credentials
+func parseAws(database string) string {
+	envVariables := "" +
+		"export CQ_VAR_DSN=" + database + "\n"
+
+	return envVariables
+}
+
+func AWS(awsString string, database string) (int, string) {
 	success := 0
+	message := ""
 	credentials, config := parseAWS(awsString)
+
+	envVariables := parseAws(database)
+	val := CreateEnvFile(envVariables)
+	if val != nil {
+		fmt.Println(val)
+		error := val.Error()
+		return success, error
+	}
 
 	setAwsCredentials(credentials)
 	setAwsConfig(config)
-	success = Fetch("aws")
+	success, message = Fetch("aws")
 
-	return success
+	return success, message
 }

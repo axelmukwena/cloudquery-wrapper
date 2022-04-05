@@ -30,29 +30,33 @@ func ValidateDir(dirName string) error {
 }
 
 // Create environment variable files
-func CreateEnvFile(content string) {
+func CreateEnvFile(content string) error {
 	homePath, error := os.UserHomeDir()
 	if error != nil {
 		fmt.Println(homePath, error)
 	}
 
-	filename := homePath + "/.cloudquery-rails"
+	filename := homePath + "/.krishancy-cloudquery"
 
 	err := ioutil.WriteFile(filename, []byte(
 		content,
 	), 0777)
 	if err != nil {
 		fmt.Printf("Unable to create the environment variables file: %v\n", err)
+		return err
 	} else {
 		fmt.Printf("Environment variables file created at root\n")
 	}
+	return nil
 }
 
 // Fetch given provider
-func Fetch(provider string) int {
+func Fetch(provider string) (bool, string) {
 	currentDir, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
+		error := err.Error()
+		return false, error
 	}
 
 	config := "--config=" + currentDir + "/config/" + provider + ".hcl"
@@ -65,7 +69,8 @@ func Fetch(provider string) int {
 
 	if err != nil {
 		log.Println(err)
-		return 0
+		error := err.Error()
+		return false, error
 	}
-	return 1
+	return true, "success"
 }

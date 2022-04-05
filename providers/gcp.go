@@ -36,20 +36,33 @@ func setGcpCredentials(credentials string) {
 }
 
 // Handle GCP environment variables
-func gcpEnvVariables() {
-	homePath, error := os.UserHomeDir()
-	if error != nil {
-		fmt.Println(homePath, error)
+func gcpEnvVariables(database string) error {
+	homePath, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(homePath, err)
+		return err
 	}
-	envVariables := "export GOOGLE_APPLICATION_CREDENTIALS=" + homePath + "/.gcp/credentials.json"
-	CreateEnvFile(envVariables)
+	envVariables := "" +
+		"export CQ_VAR_DSN=" + database + "\n" +
+		"export GOOGLE_APPLICATION_CREDENTIALS=" + homePath + "/.gcp/credentials.json"
+	val := CreateEnvFile(envVariables)
+
+	return val
 }
 
-func GCP(gcpString string) int {
+func GCP(gcpString string, database string) (int, string) {
 	success := 0
+	message := ""
 	setGcpCredentials(gcpString)
-	gcpEnvVariables()
-	success = Fetch("gcp")
+	val := gcpEnvVariables(database)
 
-	return success
+	if val != nil {
+		fmt.Println(val)
+		error := val.Error()
+		return success, error
+	}
+
+	success, message = Fetch("gcp")
+
+	return success, message
 }

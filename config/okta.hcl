@@ -8,7 +8,8 @@ cloudquery {
   }
 
   connection {
-    dsn = "tsdb://postgres:pass@localhost:5432/krishancy_api_development?sslmode=disable"
+    // dsn = "tsdb://postgres:pass@localhost:5432/krishancy_api_development?sslmode=disable"
+    dsn = "${DSN}"
   }
 
   history {

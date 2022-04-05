@@ -1,7 +1,10 @@
 package providers
 
 import "C"
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // Digitalocean JSON struct
 type digitaloceanStruct struct {
@@ -12,11 +15,12 @@ type digitaloceanStruct struct {
 }
 
 // Parse and extract credentials
-func parseDigitalocean(digitaloceanString string) string {
+func parseDigitalocean(digitaloceanString string, database string) string {
 	var digitaloceanStructNew digitaloceanStruct
 	json.Unmarshal([]byte(digitaloceanString), &digitaloceanStructNew)
 
 	envVariables := "" +
+		"export CQ_VAR_DSN=" + database + "\n" +
 		"export DIGITALOCEAN_ACCESS_TOKEN=" + digitaloceanStructNew.Digitalocean_access_token + "\n" +
 		"export DIGITALOCEAN_TOKEN=" + digitaloceanStructNew.Digitalocean_token + "\n" +
 		"export SPACES_ACCESS_KEY_ID=" + digitaloceanStructNew.Spaces_access_key_id + "\n" +
@@ -25,11 +29,19 @@ func parseDigitalocean(digitaloceanString string) string {
 	return envVariables
 }
 
-func Digitalocean(digitaloceanString string) int {
+func Digitalocean(digitaloceanString string, database string) (int, string) {
 	success := 0
-	envVariables := parseDigitalocean(digitaloceanString)
-	CreateEnvFile(envVariables)
-	success = Fetch("digitalocean")
+	message := ""
+	envVariables := parseDigitalocean(digitaloceanString, database)
 
-	return success
+	val := CreateEnvFile(envVariables)
+	if val != nil {
+		fmt.Println(val)
+		error := val.Error()
+		return success, error
+	}
+
+	success, message = Fetch("digitalocean")
+
+	return success, message
 }
