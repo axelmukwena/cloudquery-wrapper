@@ -60,6 +60,8 @@ func Fetch(provider string) (bool, string, string) {
 		return false, error, logs
 	}
 
+	// Uncommnent below for Ruby project
+	// config := "--config=" + currentDir + "/config/initializers/cloudquery/config/" + provider + ".hcl"
 	config := "--config=" + currentDir + "/config/" + provider + ".hcl"
 
 	cmd := exec.Command("cloudquery", "fetch", provider, config, "--enable-console-log")

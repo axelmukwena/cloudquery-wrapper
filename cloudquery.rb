@@ -127,6 +127,5 @@ module Cloudquery
   # message: "Description for success or fail"
   module_function :aws, :gcp, :azure, :digitalocean, :kubernetes, :okta
 
-  
 end
 

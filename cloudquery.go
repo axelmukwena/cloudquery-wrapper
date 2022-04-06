@@ -14,7 +14,7 @@ func QueryAWS(awsString string, database string) *C.char {
 	success, message, logs := providers.AWS(awsString, database)
 
 	successString := fmt.Sprint(success)
-	output := "{\"success\":" + successString + ",\"message\":\"" + message + "\",\"logs\":\"" + logs + "\"}"
+	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
 	return C.CString(output)
 }
 
@@ -23,7 +23,7 @@ func QueryGCP(gcpString string, database string) *C.char {
 	success, message, logs := providers.GCP(gcpString, database)
 
 	successString := fmt.Sprint(success)
-	output := "{\"success\":" + successString + ",\"message\":\"" + message + "\",\"logs\":\"" + logs + "\"}"
+	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
 	return C.CString(output)
 }
 
@@ -32,7 +32,7 @@ func QueryAzure(azureString string, database string) *C.char {
 	success, message, logs := providers.Azure(azureString, database)
 
 	successString := fmt.Sprint(success)
-	output := "{\"success\":" + successString + ",\"message\":\"" + message + "\",\"logs\":\"" + logs + "\"}"
+	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
 	return C.CString(output)
 }
 
@@ -41,7 +41,7 @@ func QueryDigitalocean(digitaloceanString string, database string) *C.char {
 	success, message, logs := providers.Digitalocean(digitaloceanString, database)
 
 	successString := fmt.Sprint(success)
-	output := "{\"success\":" + successString + ",\"message\":\"" + message + "\",\"logs\":\"" + logs + "\"}"
+	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
 	return C.CString(output)
 }
 
@@ -50,7 +50,7 @@ func QueryKubernetes(kubernetesString string, database string) *C.char {
 	success, message, logs := providers.Kubernetes(kubernetesString, database)
 
 	successString := fmt.Sprint(success)
-	output := "{\"success\":" + successString + ",\"message\":\"" + message + "\",\"logs\":\"" + logs + "\"}"
+	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
 	return C.CString(output)
 }
 
@@ -59,14 +59,9 @@ func QueryOkta(oktaString string, database string) *C.char {
 	success, message, logs := providers.Okta(oktaString, database)
 
 	successString := fmt.Sprint(success)
-	output := "{\"success\":" + successString + ",\"message\":\"" + message + "\",\"logs\":\"" + logs + "\"}"
+	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
 	return C.CString(output)
 }
 
 func main() {
-	// database := "tsdb://postgres:pass@localhost:5432/cloudtry?sslmode=disable"
-	// credentials := "{\"aws_access_key_id\":\"AKIATE67RE6LE34ODKPN\",\"aws_secret_access_key\":\"lVUV9tdOO++aIX9IBDNXlAQfVDs5jGh2QNUlOo0\",\"region\":\"us-west-2\"}"
-	// ifSuccess, message := providers.AWS(credentials, database)
-	// fmt.Printf("Returned: %d", ifSuccess)
-	// fmt.Printf("Message: %s", message)
 }
