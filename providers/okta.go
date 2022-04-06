@@ -25,19 +25,20 @@ func parseOkta(oktaString string, database string) string {
 	return envVariables
 }
 
-func Okta(oktaString string, database string) (int, string) {
-	success := 0
+func Okta(oktaString string, database string) (bool, string, string) {
+	success := false
 	message := ""
+	logs := ""
 	envVariables := parseOkta(oktaString, database)
 	val := CreateEnvFile(envVariables)
 
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error
+		return success, error, logs
 	}
 
-	success, message = Fetch("okta")
+	success, message, logs = Fetch("okta")
 
-	return success, message
+	return success, message, logs
 }

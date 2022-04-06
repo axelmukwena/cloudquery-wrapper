@@ -51,12 +51,13 @@ func CreateEnvFile(content string) error {
 }
 
 // Fetch given provider
-func Fetch(provider string) (bool, string) {
+func Fetch(provider string) (bool, string, string) {
+	logs := ""
 	currentDir, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
 		error := err.Error()
-		return false, error
+		return false, error, logs
 	}
 
 	config := "--config=" + currentDir + "/config/" + provider + ".hcl"
@@ -67,10 +68,13 @@ func Fetch(provider string) (bool, string) {
 
 	fmt.Printf("%s\n", stdoutStderr)
 
+	// sep := []byte("\n")
+	logs = string(stdoutStderr)
+
 	if err != nil {
 		log.Println(err)
 		error := err.Error()
-		return false, error
+		return false, error, logs
 	}
-	return true, "success"
+	return true, "success", logs
 }

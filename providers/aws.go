@@ -105,9 +105,10 @@ func parseAws(database string) string {
 	return envVariables
 }
 
-func AWS(awsString string, database string) (int, string) {
-	success := 0
+func AWS(awsString string, database string) (bool, string, string) {
+	success := false
 	message := ""
+	logs := ""
 	credentials, config := parseAWS(awsString)
 
 	envVariables := parseAws(database)
@@ -115,12 +116,12 @@ func AWS(awsString string, database string) (int, string) {
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error
+		return success, error, logs
 	}
 
 	setAwsCredentials(credentials)
 	setAwsConfig(config)
-	success, message = Fetch("aws")
+	success, message, logs = Fetch("aws")
 
-	return success, message
+	return success, message, logs
 }

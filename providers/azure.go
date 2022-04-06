@@ -29,19 +29,20 @@ func parseAzure(azureString string, database string) string {
 	return envVariables
 }
 
-func Azure(azureString string, database string) (int, string) {
-	success := 0
+func Azure(azureString string, database string) (bool, string, string) {
+	success := false
 	message := ""
+	logs := ""
 	envVariables := parseAzure(azureString, database)
 
 	val := CreateEnvFile(envVariables)
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error
+		return success, error, logs
 	}
 
-	success, message = Fetch("azure")
+	success, message, logs = Fetch("azure")
 
-	return success, message
+	return success, message, logs
 }

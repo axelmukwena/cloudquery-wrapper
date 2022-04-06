@@ -50,19 +50,20 @@ func gcpEnvVariables(database string) error {
 	return val
 }
 
-func GCP(gcpString string, database string) (int, string) {
-	success := 0
+func GCP(gcpString string, database string) (bool, string, string) {
+	success := false
 	message := ""
+	logs := ""
 	setGcpCredentials(gcpString)
 	val := gcpEnvVariables(database)
 
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error
+		return success, error, logs
 	}
 
-	success, message = Fetch("gcp")
+	success, message, logs = Fetch("gcp")
 
-	return success, message
+	return success, message, logs
 }

@@ -29,19 +29,20 @@ func parseDigitalocean(digitaloceanString string, database string) string {
 	return envVariables
 }
 
-func Digitalocean(digitaloceanString string, database string) (int, string) {
-	success := 0
+func Digitalocean(digitaloceanString string, database string) (bool, string, string) {
+	success := false
 	message := ""
+	logs := ""
 	envVariables := parseDigitalocean(digitaloceanString, database)
 
 	val := CreateEnvFile(envVariables)
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error
+		return success, error, logs
 	}
 
-	success, message = Fetch("digitalocean")
+	success, message, logs = Fetch("digitalocean")
 
-	return success, message
+	return success, message, logs
 }

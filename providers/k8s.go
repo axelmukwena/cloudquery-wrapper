@@ -50,19 +50,20 @@ func kubernetesEnvVariables(database string) error {
 	return val
 }
 
-func Kubernetes(kubernetesString string, database string) (int, string) {
-	success := 0
+func Kubernetes(kubernetesString string, database string) (bool, string, string) {
+	success := false
 	message := ""
+	logs := ""
 	setKubernetesCredentials(kubernetesString)
 	val := kubernetesEnvVariables(database)
 
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error
+		return success, error, logs
 	}
 
-	success, message = Fetch("k8s")
+	success, message, logs = Fetch("k8s")
 
-	return success, message
+	return success, message, logs
 }
