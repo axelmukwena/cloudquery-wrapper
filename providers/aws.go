@@ -24,7 +24,7 @@ func parseAWS(awsString string) (string, string) {
 	json.Unmarshal([]byte(awsString), &awsStructNew)
 
 	// Extract credentials
-	credentials := ""
+	credentials := string("")
 	if awsStructNew.Aws_session_token != "" {
 		credentials = "[temp]\n" +
 			"aws_access_key_id = " + awsStructNew.Aws_access_key_id + "\n" +
@@ -37,7 +37,7 @@ func parseAWS(awsString string) (string, string) {
 	}
 
 	// Extract config
-	config := ""
+	config := string("")
 	if awsStructNew.Region != "" {
 		config = "[default]\nregion = " + awsStructNew.Region + "\n"
 	} else {
@@ -99,7 +99,7 @@ func setAwsConfig(config string) {
 
 // Parse and extract credentials
 func parseAws(database string) string {
-	envVariables := "" +
+	envVariables := string("") +
 		"export CQ_VAR_DSN=" + database + "\n"
 
 	return envVariables
@@ -107,8 +107,8 @@ func parseAws(database string) string {
 
 func AWS(awsString string, database string) (bool, string, string) {
 	success := false
-	message := ""
-	logs := ""
+	message := string("")
+	logfile := string("")
 	credentials, config := parseAWS(awsString)
 
 	envVariables := parseAws(database)
@@ -116,12 +116,12 @@ func AWS(awsString string, database string) (bool, string, string) {
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error, logs
+		return success, error, ""
 	}
 
 	setAwsCredentials(credentials)
 	setAwsConfig(config)
-	success, message, logs = Fetch("aws")
+	success, message, logfile = Fetch("aws")
 
-	return success, message, logs
+	return success, message, logfile
 }

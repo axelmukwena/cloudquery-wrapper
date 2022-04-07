@@ -4,62 +4,61 @@ package main
 import "C"
 import (
 	"cloudquery/providers"
-	"fmt"
 )
 
 // Main provider functions exported to Ruby
 
 //export QueryAWS
 func QueryAWS(awsString string, database string) *C.char {
-	success, message, logs := providers.AWS(awsString, database)
+	success, message, logfile := providers.AWS(awsString, database)
 
-	successString := fmt.Sprint(success)
-	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
+	// We read the contents later to allow time for cloudquery to save the log file
+	output := providers.PrepareOutput(success, message, logfile)
 	return C.CString(output)
 }
 
 //export QueryGCP
 func QueryGCP(gcpString string, database string) *C.char {
-	success, message, logs := providers.GCP(gcpString, database)
+	success, message, logfile := providers.GCP(gcpString, database)
 
-	successString := fmt.Sprint(success)
-	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
+	// We read the contents later to allow time for cloudquery to save the log file
+	output := providers.PrepareOutput(success, message, logfile)
 	return C.CString(output)
 }
 
 //export QueryAzure
 func QueryAzure(azureString string, database string) *C.char {
-	success, message, logs := providers.Azure(azureString, database)
+	success, message, logfile := providers.Azure(azureString, database)
 
-	successString := fmt.Sprint(success)
-	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
+	// We read the contents later to allow time for cloudquery to save the log file
+	output := providers.PrepareOutput(success, message, logfile)
 	return C.CString(output)
 }
 
 //export QueryDigitalocean
 func QueryDigitalocean(digitaloceanString string, database string) *C.char {
-	success, message, logs := providers.Digitalocean(digitaloceanString, database)
+	success, message, logfile := providers.Digitalocean(digitaloceanString, database)
 
-	successString := fmt.Sprint(success)
-	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
+	// We read the contents later to allow time for cloudquery to save the log file
+	output := providers.PrepareOutput(success, message, logfile)
 	return C.CString(output)
 }
 
 //export QueryKubernetes
 func QueryKubernetes(kubernetesString string, database string) *C.char {
-	success, message, logs := providers.Kubernetes(kubernetesString, database)
+	success, message, logfile := providers.Kubernetes(kubernetesString, database)
 
-	successString := fmt.Sprint(success)
-	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
+	// We read the contents later to allow time for cloudquery to save the log file
+	output := providers.PrepareOutput(success, message, logfile)
 	return C.CString(output)
 }
 
 //export QueryOkta
 func QueryOkta(oktaString string, database string) *C.char {
-	success, message, logs := providers.Okta(oktaString, database)
+	success, message, logfile := providers.Okta(oktaString, database)
 
-	successString := fmt.Sprint(success)
-	output := string("{\"success\":" + successString + ", \"message\":" + message + ", \"logs\": " + logs + "}")
+	// We read the contents later to allow time for cloudquery to save the log file
+	output := providers.PrepareOutput(success, message, logfile)
 	return C.CString(output)
 }
 

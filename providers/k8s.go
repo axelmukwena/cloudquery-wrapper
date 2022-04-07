@@ -42,7 +42,7 @@ func kubernetesEnvVariables(database string) error {
 		fmt.Println(homePath, err)
 		return err
 	}
-	envVariables := "" +
+	envVariables := string("") +
 		"export CQ_VAR_DSN=" + database + "\n" +
 		"export KUBECONFIG=" + homePath + "/.k8s/credentials"
 	val := CreateEnvFile(envVariables)
@@ -52,18 +52,18 @@ func kubernetesEnvVariables(database string) error {
 
 func Kubernetes(kubernetesString string, database string) (bool, string, string) {
 	success := false
-	message := ""
-	logs := ""
+	message := string("")
+	logfile := string("")
 	setKubernetesCredentials(kubernetesString)
 	val := kubernetesEnvVariables(database)
 
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error, logs
+		return success, error, logfile
 	}
 
-	success, message, logs = Fetch("k8s")
+	success, message, logfile = Fetch("k8s")
 
-	return success, message, logs
+	return success, message, logfile
 }

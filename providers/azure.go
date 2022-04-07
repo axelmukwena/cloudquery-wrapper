@@ -19,7 +19,7 @@ func parseAzure(azureString string, database string) string {
 	var azureStructNew azureStruct
 	json.Unmarshal([]byte(azureString), &azureStructNew)
 
-	envVariables := "" +
+	envVariables := string("") +
 		"export CQ_VAR_DSN=" + database + "\n" +
 		"export AZURE_SUBSCRIPTION_ID=" + azureStructNew.Azure_subscription_id + "\n" +
 		"export AZURE_TENANT_ID=" + azureStructNew.Azure_tenant_id + "\n" +
@@ -31,18 +31,18 @@ func parseAzure(azureString string, database string) string {
 
 func Azure(azureString string, database string) (bool, string, string) {
 	success := false
-	message := ""
-	logs := ""
+	message := string("")
+	logfile := string("")
 	envVariables := parseAzure(azureString, database)
 
 	val := CreateEnvFile(envVariables)
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error, logs
+		return success, error, logfile
 	}
 
-	success, message, logs = Fetch("azure")
+	success, message, logfile = Fetch("azure")
 
-	return success, message, logs
+	return success, message, logfile
 }

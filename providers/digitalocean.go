@@ -19,7 +19,7 @@ func parseDigitalocean(digitaloceanString string, database string) string {
 	var digitaloceanStructNew digitaloceanStruct
 	json.Unmarshal([]byte(digitaloceanString), &digitaloceanStructNew)
 
-	envVariables := "" +
+	envVariables := string("") +
 		"export CQ_VAR_DSN=" + database + "\n" +
 		"export DIGITALOCEAN_ACCESS_TOKEN=" + digitaloceanStructNew.Digitalocean_access_token + "\n" +
 		"export DIGITALOCEAN_TOKEN=" + digitaloceanStructNew.Digitalocean_token + "\n" +
@@ -31,18 +31,18 @@ func parseDigitalocean(digitaloceanString string, database string) string {
 
 func Digitalocean(digitaloceanString string, database string) (bool, string, string) {
 	success := false
-	message := ""
-	logs := ""
+	message := string("")
+	logfile := string("")
 	envVariables := parseDigitalocean(digitaloceanString, database)
 
 	val := CreateEnvFile(envVariables)
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error, logs
+		return success, error, logfile
 	}
 
-	success, message, logs = Fetch("digitalocean")
+	success, message, logfile = Fetch("digitalocean")
 
-	return success, message, logs
+	return success, message, logfile
 }

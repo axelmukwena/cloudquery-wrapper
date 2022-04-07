@@ -42,7 +42,7 @@ func gcpEnvVariables(database string) error {
 		fmt.Println(homePath, err)
 		return err
 	}
-	envVariables := "" +
+	envVariables := string("") +
 		"export CQ_VAR_DSN=" + database + "\n" +
 		"export GOOGLE_APPLICATION_CREDENTIALS=" + homePath + "/.gcp/credentials.json"
 	val := CreateEnvFile(envVariables)
@@ -52,18 +52,18 @@ func gcpEnvVariables(database string) error {
 
 func GCP(gcpString string, database string) (bool, string, string) {
 	success := false
-	message := ""
-	logs := ""
+	message := string("")
+	logfile := string("")
 	setGcpCredentials(gcpString)
 	val := gcpEnvVariables(database)
 
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error, logs
+		return success, error, logfile
 	}
 
-	success, message, logs = Fetch("gcp")
+	success, message, logfile = Fetch("gcp")
 
-	return success, message, logs
+	return success, message, logfile
 }

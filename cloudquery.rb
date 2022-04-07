@@ -21,7 +21,7 @@ module Cloudquery
   end
 
   # foreign function definitions
-  # Returns a json serialisable string
+  # Returns a json serializable string
   # Input String: {"success": true, "message": "success", "logs": "Logs here"}
   # Output Object: "{\"success\":true,\"message\":\"success\",\"logs\":\"Logs here\"}"
   
@@ -36,9 +36,7 @@ module Cloudquery
     c_string = Cloudquery::String.new(json_string)
     db_c_string = Cloudquery::String.new(database)
     output, pointer = Cloudquery.QueryAWS(c_string, db_c_string)
-
-    data = JSON.parse(output)
-    [data["success"], data["message"], data["logs"]]
+    output
   end
 
   # ----------------- GCP -----------------
@@ -51,9 +49,7 @@ module Cloudquery
     c_string = Cloudquery::String.new(json_string)
     db_c_string = Cloudquery::String.new(database)
     output, pointer = Cloudquery.QueryGCP(c_string, db_c_string)
-    
-    data = JSON.parse(output)
-    [data["success"], data["message"], data["logs"]]
+    output
   end
 
   # ----------------- Azure -----------------
@@ -67,9 +63,7 @@ module Cloudquery
     c_string = Cloudquery::String.new(json_string)
     db_c_string = Cloudquery::String.new(database)
     output, pointer = Cloudquery.QueryAzure(c_string, db_c_string)
-
-    data = JSON.parse(output)
-    [data["success"], data["message"], data["logs"]]
+    output
   end
 
   # ----------------- Digitalocean -----------------
@@ -83,9 +77,7 @@ module Cloudquery
     c_string = Cloudquery::String.new(json_string)
     db_c_string = Cloudquery::String.new(database)
     output, pointer = Cloudquery.QueryDigitalocean(c_string, db_c_string)
-
-    data = JSON.parse(output)
-    [data["success"], data["message"], data["logs"]]
+    output
   end
 
   # ----------------- Kubernetes -----------------
@@ -98,9 +90,7 @@ module Cloudquery
     c_string = Cloudquery::String.new(json_string)
     db_c_string = Cloudquery::String.new(database)
     output, pointer = Cloudquery.QueryKubernetes(c_string, db_c_string)
-
-    data = JSON.parse(output)
-    [data["success"], data["message"], data["logs"]]
+    output
   end
 
   # ----------------- Okta -----------------
@@ -114,9 +104,7 @@ module Cloudquery
     c_string = Cloudquery::String.new(json_string)
     db_c_string = Cloudquery::String.new(database)
     output, pointer = Cloudquery.QueryOkta(c_string, db_c_string)
-
-    data = JSON.parse(output)
-    [data["success"], data["message"], data["logs"]]
+    output
   end
 
   # ---------------------------------------------------

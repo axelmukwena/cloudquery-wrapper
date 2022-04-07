@@ -1,12 +1,15 @@
 package providers
 
+import "C"
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"time"
 )
 
 // Check if directory exists, if not, create it
@@ -50,33 +53,111 @@ func CreateEnvFile(content string) error {
 	return nil
 }
 
-// Fetch given provider
-func Fetch(provider string) (bool, string, string) {
-	logs := ""
+func Configurations(provider string) (bool, string, string, string, string, string) {
+
 	currentDir, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
 		error := err.Error()
-		return false, error, logs
+		return false, error, string(""), string(""), string(""), string("")
 	}
 
-	// Uncommnent below for Ruby project
-	// config := "--config=" + currentDir + "/config/initializers/cloudquery/config/" + provider + ".hcl"
-	config := "--config=" + currentDir + "/config/" + provider + ".hcl"
+	// Toggle comments below for Ruby project
 
-	cmd := exec.Command("cloudquery", "fetch", provider, config, "--enable-console-log")
+	// Create log folder if it doesn't exist
+	logsDir := "/config/initializers/cloudquery/logs"
+	// logsDir := "/config/logs"
+	val := ValidateDir(currentDir + logsDir)
+	if val != nil {
+		fmt.Println(val)
+	}
+	logsDirConfig := "--log-directory=" + currentDir + logsDir
+
+	filename := fmt.Sprint(time.Now().Unix())
+	logFileConfig := "--log-file=" + filename + ".log"
+
+	config := "--config=" + currentDir + "/config/initializers/cloudquery/config/" + provider + ".hcl"
+	//config := "--config=" + currentDir + "/config/" + provider + ".hcl"
+
+	return true, string("success"), config, logsDirConfig, logFileConfig, filename
+}
+
+// Fetch given provider
+func Fetch(provider string) (bool, string, string) {
+
+	success, message, config, logsDirConfig, logFileConfig, filename := Configurations(provider)
+
+	if success == false {
+		return false, message, string("")
+	}
+
+	cmd := exec.Command("cloudquery", "fetch", provider, config, "--enable-console-log", logsDirConfig, logFileConfig)
 
 	stdoutStderr, err := cmd.CombinedOutput()
 
 	fmt.Printf("%s\n", stdoutStderr)
 
 	// sep := []byte("\n")
-	logs = string(stdoutStderr)
+	// logs = fmt.Sprint(stdoutStderr)
+	// logs = string(stdoutStderr)
 
 	if err != nil {
 		log.Println(err)
 		error := err.Error()
-		return false, error, logs
+		return false, error, filename
 	}
-	return true, "success", logs
+	return success, message, filename
+}
+
+// Get the latest config file
+func ReadLogFile(filename string) string {
+
+	currentDir, err := os.Getwd()
+
+	if err != nil {
+		log.Println(err)
+		// error := err.Error()
+		// return error, ""
+		return "[]"
+	}
+
+	logsDir := currentDir + "/config/initializers/cloudquery/logs/"
+	// logsDir := "/logs"
+
+	logFile := logsDir + filename + ".log"
+
+	file, err := os.Open(logFile)
+	if err != nil {
+		log.Println(err)
+		return "[]"
+	}
+	defer file.Close()
+
+	contents := string("")
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		if contents == "" {
+			contents += scanner.Text()
+		} else {
+			contents += "," + scanner.Text()
+		}
+
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Println(err)
+		return "[]"
+	}
+
+	return "[" + contents + "]"
+}
+
+func PrepareOutput(success bool, message string, logfile string) string {
+
+	logs := string("[]")
+	logs = ReadLogFile(logfile)
+
+	successString := fmt.Sprint(success)
+	output := string("{\"success\":" + successString + ", \"message\":\"" + message + "\", \"logfile\":\"" + logfile + "\", \"logs\":" + logs + "}")
+	return output
 }

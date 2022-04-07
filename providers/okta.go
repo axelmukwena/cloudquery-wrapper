@@ -17,7 +17,7 @@ func parseOkta(oktaString string, database string) string {
 	var oktaStructNew oktaStruct
 	json.Unmarshal([]byte(oktaString), &oktaStructNew)
 
-	envVariables := "" +
+	envVariables := string("") +
 		"export CQ_VAR_DSN=" + database + "\n" +
 		"export CQ_VAR_OKTA_DOMAIN=" + oktaStructNew.Okta_domain + "\n" +
 		"export OKTA_API_TOKEN=" + oktaStructNew.Okta_api_token + "\n"
@@ -27,18 +27,18 @@ func parseOkta(oktaString string, database string) string {
 
 func Okta(oktaString string, database string) (bool, string, string) {
 	success := false
-	message := ""
-	logs := ""
+	message := string("")
+	logfile := string("")
 	envVariables := parseOkta(oktaString, database)
 	val := CreateEnvFile(envVariables)
 
 	if val != nil {
 		fmt.Println(val)
 		error := val.Error()
-		return success, error, logs
+		return success, error, logfile
 	}
 
-	success, message, logs = Fetch("okta")
+	success, message, logfile = Fetch("okta")
 
-	return success, message, logs
+	return success, message, logfile
 }
